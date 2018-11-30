@@ -89,4 +89,14 @@ ops_manager_dns = pcf.pcf.syanagihara.cf
 ![](images/bosh-network2.png)
 ![](images/bosh-network3.png)
 
+![](images/bosh-az-nw.png)
+
+![](images/bosh-security.png)
+
+![](images/bosh-syslog.png)
+
+![](images/bosh-resource.png)
+
+![](images/bosh-apply.png)
+
 ## まとめ / 振り返り

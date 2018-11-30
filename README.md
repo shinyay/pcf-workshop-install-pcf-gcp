@@ -32,4 +32,19 @@ YOUR-KEY-JSON
 SERVICE_ACCOUNT_KEY
 ```
 
+#### Terraform 実行
+```
+```
+
+### OpsManager
+#### OpsManager アクセス
+- `$ terraform output|grep ops_manager_dns`
+
+```
+ops_manager_dns = pcf.pcf.syanagihara.cf
+```
+
+![](images/opsman-initial.png)
+![](images/opsman-login.png)
+![](images/opsman-bosh-before.png)
 ## まとめ / 振り返り

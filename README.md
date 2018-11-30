@@ -47,4 +47,46 @@ ops_manager_dns = pcf.pcf.syanagihara.cf
 ![](images/opsman-initial.png)
 ![](images/opsman-login.png)
 ![](images/opsman-bosh-before.png)
+
+- `$ terraform output|grep project`
+
+![](images/bosh-google-config.png)
+
+![](images/bosh-director-config1.png)
+![](images/bosh-director-config2.png)
+![](images/bosh-director-config3.png)
+![](images/bosh-director-config4.png)
+![](images/bosh-director-config5.png)
+![](images/bosh-director-config6.png)
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.azs.value'`
+
+![](images/bosh-az.png)
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.network_name.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.management_subnet_name.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.region.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.management_subnet_cidrs.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.management_subnet_gateway.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.pas_subnet_name.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.pas_subnet_cidrs.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.pas_subnet_gateway.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.services_subnet_name.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.services_subnet_cidrs.value'`
+
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.services_subnet_gateway.value'`
+
+![](images/bosh-network1.png)
+![](images/bosh-network2.png)
+![](images/bosh-network3.png)
+
 ## まとめ / 振り返り

@@ -40,11 +40,13 @@ SERVICE_ACCOUNT_KEY
 #### OpsManager アクセス
 - `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.ops_manager_dns.value'`
 
+  - http://`pcf.pcf.syanagihara.cf`
+
 ![](images/opsman-initial.png)
 ![](images/opsman-login.png)
 ![](images/opsman-bosh-before.png)
 
-- `$ terraform output|grep project`
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.project.value'`
 
 ![](images/bosh-google-config.png)
 

@@ -38,11 +38,7 @@ SERVICE_ACCOUNT_KEY
 
 ### OpsManager
 #### OpsManager アクセス
-- `$ terraform output|grep ops_manager_dns`
-
-```
-ops_manager_dns = pcf.pcf.syanagihara.cf
-```
+- `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.ops_manager_dns.value'`
 
 ![](images/opsman-initial.png)
 ![](images/opsman-login.png)

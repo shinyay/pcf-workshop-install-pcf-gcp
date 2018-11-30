@@ -163,4 +163,22 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --quiet \
     --command "wget -O om https://github.com/pivotal-cf/om/releases/download/0.46.0/om-linux && chmod +x om && sudo mv om /usr/local/bin/"
 ```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-product -p ~/cf-2.3.3-build.10.pivotal"
+```
+
+```
+$ gcloud compute ssh ubuntu@$PKS_ENV_PREFIX-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "om --target https://localhost -k -u admin -p admin stage-product -p cf -v 2.3.3"
+```
 ## まとめ / 振り返り

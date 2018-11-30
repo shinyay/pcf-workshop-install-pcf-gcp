@@ -134,8 +134,12 @@ $ pivnet product-files -p elastic-runtime -r 2.3.3
 ```
 
 ```
+$ set -x ZONE asia-northeast1-b
+```
+
+```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
-    --zone asia-northeast1-b \
+    --zone $ZONE \
     --force-key-file-overwrite \
     --strict-host-key-checking=no \
     --quiet \
@@ -143,12 +147,20 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 ```
 
 ```
-gcloud compute ssh ubuntu@pcf-ops-manager-ops-manager \
-    --zone asia-northeast1-b \
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
     --force-key-file-overwrite \
     --strict-host-key-checking=no \
     --quiet \
     --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p elastic-runtime -r 2.3.3 && pivnet download-product-files -p elastic-runtime -r 2.3.3 -i 254457"
 ```
 
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "wget -O om https://github.com/pivotal-cf/om/releases/download/0.46.0/om-linux && chmod +x om && sudo mv om /usr/local/bin/"
+```
 ## まとめ / 振り返り

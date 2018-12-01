@@ -519,6 +519,6 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --quiet \
     --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-stemcell -s ~/light-bosh-stemcell-3586.57-google-kvm-ubuntu-trusty-go_agent.tgz"
 ```
-</details>
+</details>
 
 ## まとめ / 振り返り

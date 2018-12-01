@@ -300,5 +300,7 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 ![](images/pas-nw7.png)
 ![](images/pas-nw8.png)
 
+![](images/pas-app1.png)
+![](images/pas-app2.png)
 
 ## まとめ / 振り返り

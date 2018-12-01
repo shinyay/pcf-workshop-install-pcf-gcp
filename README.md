@@ -173,6 +173,8 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-product -p ~/cf-2.3.3-build.10.pivotal"
 ```
 
+![](images/pas-uploaded.png)
+
 ```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --zone $ZONE \
@@ -181,6 +183,8 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --quiet \
     --command "om --target https://localhost -k -u admin -p admin stage-product -p cf -v 2.3.3"
 ```
+
+![](images/pas-staged.png)
 
 ```
 $ pivnet products|grep stemcells
@@ -276,5 +280,12 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --quiet \
     --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-stemcell -s ~/light-bosh-stemcell-97.34-google-kvm-ubuntu-xenial-go_agent.tgz"
 ```
+
+![](images/pas-stemcell.png)
+
+### Pivotal Application Service 設定
+
+![](images/pas-az-nw.png)
+
 
 ## まとめ / 振り返り

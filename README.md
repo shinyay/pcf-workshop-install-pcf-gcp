@@ -289,6 +289,16 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-domain.png)
 
+![](images/pas-cert-gen.png)
+
+![](images/pas-nw1.png)
+![](images/pas-nw2.png)
+![](images/pas-nw3.png)
+![](images/pas-nw4.png)
+![](images/pas-nw5.png)
+![](images/pas-nw6.png)
+![](images/pas-nw7.png)
+![](images/pas-nw8.png)
 
 
 ## まとめ / 振り返り

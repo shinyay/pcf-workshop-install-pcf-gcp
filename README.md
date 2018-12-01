@@ -91,7 +91,7 @@ $ terraform apply plan
 
 - `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.services_subnet_gateway.value'`
 
-|項目|入力値|
+|項目|入力値|
 |--|--|
 |Name<br>`management`|management|
 |Google Network Name<br>`network_name/management_subnet_name/region`|pcf-pcf-network/pcf-management-subnet/asia-northeast1|
@@ -100,7 +100,7 @@ $ terraform apply plan
 |DNS|169.254.169.254|
 |Gateway<br>`management_subnet_gateway`|10.0.0.1|
 
-|項目|入力値|
+|項目|入力値|
 |--|--|
 |Name<br>`pas`|pas|
 |Google Network Name<br>`network_name/pas_subnet_name/region`|pcf-pcf-network/pcf-pas-subnet/asia-northeast1|
@@ -109,7 +109,7 @@ $ terraform apply plan
 |DNS|169.254.169.254|
 |Gateway<br>`pas_subnet_gateway`|10.0.4.1|
 
-|項目|入力値|
+|項目|入力値|
 |--|--|
 |Name<br>`services`|services|
 |Google Network Name<br>`network_name/services_subnet_name/region`|pcf-pcf-network/pcf-services-subnet/asia-northeast1|
@@ -149,7 +149,7 @@ $ pivnet products |grep elastic-runtime
 |  60 | elastic-runtime                            | Pivotal Application Service     |
 ``` 
 
-##### リリース番号の特定
+##### リリース番号の特定
 
 ```
 $ pivnet releases -p elastic-runtime |grep 2.3
@@ -247,7 +247,7 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 #### StemCell の設定
 
-##### StemCell プロダクト名確認
+##### StemCell プロダクト名確認
 
 ```
 $ pivnet products|grep stemcells

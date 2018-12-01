@@ -308,4 +308,11 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-sec.png)
 
+![](images/pas-sso.png)
+
+![](images/pas-uaa-cert-gen.png)
+![](images/pas-uaa1.png)
+![](images/pas-uaa2.png)
+
+
 ## まとめ / 振り返り

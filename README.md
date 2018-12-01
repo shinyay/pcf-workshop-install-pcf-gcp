@@ -34,6 +34,9 @@ SERVICE_ACCOUNT_KEY
 
 #### Terraform 実行
 ```
+$ terraform init
+$ terraform plan -out=plan
+$ terraform apply plan
 ```
 
 ### OpsManager
@@ -355,5 +358,106 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 ![](images/pas-applying.png)
 
 
+### temp
+```
+$ pivnet product-files -p stemcells-ubuntu-xenial -r 97.28
 
++--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+|   ID   |              NAME              | FILE VERSION |      FILE TYPE      |                              SHA256                              |                                                 AWS OBJECT KEY                                                 |
++--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| 247325 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | d8ea90830e1bcbe06c5b6222198e6a70ee790206612d40b9141d4c8c70c2a5f8 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-vsphere-esxi-ubuntu-xenial-go_agent.tgz              |
+|        | vSphere 97.28                  |              |                     |                                                                  |                                                                                                                |
+| 247323 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | a9593e32795524fc2067cd2116f169460f949cee3a71c1ccb2acc85af08c35d0 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-vcloud-esxi-ubuntu-xenial-go_agent.tgz               |
+|        | vCloud 97.28                   |              |                     |                                                                  |                                                                                                                |
+| 202813 | Ubuntu Xenial Stemcell 97.10   |        97.10 | Open Source License | f80d689702f0e7eb360dbe94c4bb7b0bcf1c6e80e15aa7b2fee0d2ce365cda6a | product-files/stemcells-ubuntu-xenial/open_source_license_stemcells-ubuntu-xenial-97.10-e68fd75-1535122432.txt |
+|        | OSL                            |              |                     |                                                                  |                                                                                                                |
+| 247316 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | 1dcddd9e8f00a96c09e3c248d82ed6d015606100c3445f241965edb0115d9a57 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-openstack-kvm-ubuntu-xenial-go_agent-raw.tgz         |
+|        | Openstack 97.28                |              |                     |                                                                  |                                                                                                                |
+| 247315 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | c1202c333902e27a5cdaea360ea9ca9006bafb8a5e40d2d305a164fcb31d2e58 | product-files/stemcells-ubuntu-xenial/light-bosh-stemcell-97.28-google-kvm-ubuntu-xenial-go_agent.tgz          |
+|        | Google Cloud Platform 97.28    |              |                     |                                                                  |                                                                                                                |
+| 247301 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | 443b1b71f4f070c68b27737d9d6380f26751866cd263823e4a2a300f39319504 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-azure-hyperv-ubuntu-xenial-go_agent.tgz              |
+|        | Azure 97.28                    |              |                     |                                                                  |                                                                                                                |
+| 247298 | Ubuntu Xenial Stemcell for AWS |        97.28 | Software            | 7d3332a5a84eb59df59b3d94eeeced4d4819dd0ebfd8b3bc37f75c4d51e6905e | product-files/stemcells-ubuntu-xenial/light-bosh-stemcell-97.28-aws-xen-hvm-ubuntu-xenial-go_agent.tgz         |
+|        |                          97.28 |              |                     |                                                                  |                                                                                                                |
++--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p stemcells-ubuntu-xenial -r 97.34 && pivnet download-product-files -p stemcells-ubuntu-xenial -r 97.28 -i 247315"
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "ls -l"
+
+total 13553508
+-rw-rw-r-- 1 ubuntu ubuntu 13878740011 Nov 30 13:02 cf-2.3.3-build.10.pivotal
+-rw-rw-r-- 1 ubuntu ubuntu       20312 Dec  1 08:45 light-bosh-stemcell-97.28-google-kvm-ubuntu-xenial-go_agent.tgz
+-rw-rw-r-- 1 ubuntu ubuntu       20349 Dec  1 00:48 light-bosh-stemcell-97.34-google-kvm-ubuntu-xenial-go_agent.tgz
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-stemcell -s ~/light-bosh-stemcell-97.28-google-kvm-ubuntu-xenial-go_agent.tgz"
+```
+
+
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p elastic-runtime -r 2.2.10 && pivnet download-product-files -p elastic-runtime -r 2.2.10 -i 267138"
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-product -p ~/cf-2.2.10-build.11.pivotal"
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "om --target https://localhost -k -u admin -p admin stage-product -p cf -v 2.2.10"
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p stemcells -r 3586.57 && pivnet download-product-files -p stemcells -r 3586.57 -i 266877"
+```
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-stemcell -s ~/light-bosh-stemcell-3586.57-google-kvm-ubuntu-trusty-go_agent.tgz"
+```
 ## まとめ / 振り返り

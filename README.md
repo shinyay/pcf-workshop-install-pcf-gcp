@@ -174,7 +174,7 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 ```
 
 ```
-$ gcloud compute ssh ubuntu@$PKS_ENV_PREFIX-ops-manager \
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
     --zone $ZONE \
     --force-key-file-overwrite \
     --strict-host-key-checking=no \

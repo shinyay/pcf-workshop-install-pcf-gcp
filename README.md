@@ -319,4 +319,6 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-db.png)
 
+![](images/pas-mysql.png)
+
 ## まとめ / 振り返り

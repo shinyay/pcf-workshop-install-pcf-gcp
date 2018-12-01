@@ -325,4 +325,35 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-syslog.png)
 
+![](images/pas-branding.png)
+
+![](images/pas-appsman.png)
+
+![](images/pas-email.png)
+
+![](images/pas-autoscale.png)
+
+![](images/pas-cc.png)
+
+![](images/pas-smoke.png)
+
+![](images/pas-adv.png)
+
+![](images/pas-errand.png)
+
+- Router
+  - `tcp:pcf-cf-ws,http:pcf-httpslb`
+- TCP Router
+  - `tcp:pcf-cf-tcp`
+- Diego Brain
+  - `tcp:pcf-cf-ssh`
+
+![](images/pas-resource.png)
+
+![](images/pas-before-apply.png)
+
+![](images/pas-applying.png)
+
+
+
 ## まとめ / 振り返り

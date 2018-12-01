@@ -50,10 +50,15 @@ $ terraform apply plan
 ![](images/opsman-bosh-before.png)
 
 - `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.project.value'`
+  - `pcf`
 
 ![](images/bosh-google-config.png)
 
 ![](images/bosh-director-config1.png)
+
+- NTP Servers
+  - `metadata.google.internal`
+
 ![](images/bosh-director-config2.png)
 ![](images/bosh-director-config3.png)
 ![](images/bosh-director-config4.png)
@@ -86,9 +91,39 @@ $ terraform apply plan
 
 - `$ cat ./terraform.tfstate | jq -r '.modules[0].outputs.services_subnet_gateway.value'`
 
+|項目|入力値|
+|--|--|
+|Name<br>`management`|management|
+|Google Network Name<br>`network_name/management_subnet_name/region`|pcf-pcf-network/pcf-management-subnet/asia-northeast1|
+|CIDR<br>`management_subnet_cidrs`|10.0.0.0/26|
+|Reserved IP Ranges<br>|10.0.0.1-10.0.0.9|
+|DNS|169.254.169.254|
+|Gateway<br>`management_subnet_gateway`|10.0.0.1|
+
+|項目|入力値|
+|--|--|
+|Name<br>`pas`|pas|
+|Google Network Name<br>`network_name/pas_subnet_name/region`|pcf-pcf-network/pcf-pas-subnet/asia-northeast1|
+|CIDR<br>`pas_subnet_cidrs`|10.0.4.0/24|
+|Reserved IP Ranges<br>|10.0.4.1-10.0.4.9|
+|DNS|169.254.169.254|
+|Gateway<br>`pas_subnet_gateway`|10.0.4.1|
+
+|項目|入力値|
+|--|--|
+|Name<br>`services`|services|
+|Google Network Name<br>`network_name/services_subnet_name/region`|pcf-pcf-network/pcf-services-subnet/asia-northeast1|
+|CIDR<br>`services_subnet_cidrs`|10.0.8.0/24|
+|Reserved IP Ranges<br>|10.0.8.1-10.0.8.9|
+|DNS|169.254.169.254|
+|Gateway<br>`services_subnet_gateway`|10.0.8.1|
+
 ![](images/bosh-network1.png)
 ![](images/bosh-network2.png)
 ![](images/bosh-network3.png)
+
+- Network
+  - `management`
 
 ![](images/bosh-az-nw.png)
 
@@ -98,16 +133,23 @@ $ terraform apply plan
 
 ![](images/bosh-resource.png)
 
+- `Apply changes`
+
 ![](images/bosh-apply.png)
 
-### Pivotal Application Service ダウンロード
+### Pivotal Application Service 導入準備
 
-#### Pivnet ID 特定
+#### PivNet CLI の利用
+
+##### プロダクト名の特定
+
 ```
 $ pivnet products |grep elastic-runtime
 
 |  60 | elastic-runtime                            | Pivotal Application Service     |
 ``` 
+
+##### リリース番号の特定
 
 ```
 $ pivnet releases -p elastic-runtime |grep 2.3
@@ -117,6 +159,8 @@ $ pivnet releases -p elastic-runtime |grep 2.3
 | 196729 | 2.3.1           | Please refer to the release    | 2018-11-28T05:35:32.806Z |
 | 188503 | 2.3.0           | Please refer to the release    | 2018-11-28T05:35:32.767Z |
 ```
+
+##### プロダクトファイル ID の特定
 
 ```
 $ pivnet product-files -p elastic-runtime -r 2.3.3
@@ -136,9 +180,13 @@ $ pivnet product-files -p elastic-runtime -r 2.3.3
 +--------+--------------------------------+----------------+---------------------+------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
 ```
 
+#### GCP 上へのコマンドインストール
+
 ```
 $ set -x ZONE asia-northeast1-b
 ```
+
+##### PivNet CLI
 
 ```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
@@ -149,14 +197,7 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --command "wget -O pivnet https://github.com/pivotal-cf/pivnet-cli/releases/download/v0.0.55/pivnet-linux-amd64-0.0.55 && chmod +x pivnet && sudo mv pivnet /usr/local/bin/"
 ```
 
-```
-$ gcloud compute ssh ubuntu@pcf-ops-manager \
-    --zone $ZONE \
-    --force-key-file-overwrite \
-    --strict-host-key-checking=no \
-    --quiet \
-    --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p elastic-runtime -r 2.3.3 && pivnet download-product-files -p elastic-runtime -r 2.3.3 -i 254457"
-```
+##### OM CLI
 
 ```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
@@ -166,6 +207,21 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --quiet \
     --command "wget -O om https://github.com/pivotal-cf/om/releases/download/0.46.0/om-linux && chmod +x om && sudo mv om /usr/local/bin/"
 ```
+
+#### PAS ダウンロード＆ステージング
+
+##### PAS ダウンロード
+
+```
+$ gcloud compute ssh ubuntu@pcf-ops-manager \
+    --zone $ZONE \
+    --force-key-file-overwrite \
+    --strict-host-key-checking=no \
+    --quiet \
+    --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p elastic-runtime -r 2.3.3 && pivnet download-product-files -p elastic-runtime -r 2.3.3 -i 254457"
+```
+
+##### PAS ステージング
 
 ```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
@@ -189,6 +245,10 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-staged.png)
 
+#### StemCell の設定
+
+##### StemCell プロダクト名確認
+
 ```
 $ pivnet products|grep stemcells
 
@@ -196,6 +256,8 @@ $ pivnet products|grep stemcells
 |  82 | stemcells                                  | Stemcells for PCF               |
 | 151 | stemcells-windows-server                   | Stemcells for PCF (Windows)     |
 ```
+
+##### StemCell バージョン確認
 
 ```
 $ pivnet releases -p stemcells-ubuntu-xenial
@@ -230,6 +292,8 @@ $ pivnet releases -p stemcells-ubuntu-xenial
 +--------+---------+--------------------------------+--------------------------+
 ```
 
+##### StemCell プロダクトファイル ID 確認
+
 ```
 $ pivnet product-files -p stemcells-ubuntu-xenial -r 97.34
 
@@ -252,6 +316,8 @@ $ pivnet product-files -p stemcells-ubuntu-xenial -r 97.34
 |        |                          97.34 |              |                     |                                                                  |                                                                                                                |
 +--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 ```
+
+##### StemCeell の設定
 
 ```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
@@ -286,13 +352,19 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-stemcell.png)
 
-### Pivotal Application Service 設定
+### Pivotal Application Service インストール
+
+#### AZ and Network Assignments
 
 ![](images/pas-az-nw.png)
+
+#### Domains
 
 ![](images/pas-domain.png)
 
 ![](images/pas-cert-gen.png)
+
+#### Networking
 
 ![](images/pas-nw1.png)
 ![](images/pas-nw2.png)
@@ -303,46 +375,87 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 ![](images/pas-nw7.png)
 ![](images/pas-nw8.png)
 
+#### Application Containers
+
 ![](images/pas-app1.png)
 ![](images/pas-app2.png)
+
+#### Application Developer Controls
 
 ![](images/pas-dev1.png)
 ![](images/pas-dev2.png)
 
+#### Application Security Groups
+
 ![](images/pas-sec.png)
 
+#### Application and Enterprise SSO
+
 ![](images/pas-sso.png)
+
+#### UAA
 
 ![](images/pas-uaa-cert-gen.png)
 ![](images/pas-uaa1.png)
 ![](images/pas-uaa2.png)
 
+#### CredHub
+
 ![](images/pas-credhub1.png)
 ![](images/pas-credhub2.png)
 
+#### Databases
+
 ![](images/pas-db.png)
+
+#### Internal MySQL
 
 ![](images/pas-mysql.png)
 
+#### File Storage
+
 ![](images/pas-storage.png)
+
+#### System Logging
 
 ![](images/pas-syslog.png)
 
+####  Custom Branding
+
 ![](images/pas-branding.png)
+
+#### Apps Manager
 
 ![](images/pas-appsman.png)
 
+#### Email Notifications
+
 ![](images/pas-email.png)
+
+#### App Autoscaler
 
 ![](images/pas-autoscale.png)
 
+#### Cloud Controller
+
 ![](images/pas-cc.png)
+
+#### Smoke Tests
 
 ![](images/pas-smoke.png)
 
+#### Advanced Features
+
 ![](images/pas-adv.png)
 
+#### Errands
+
 ![](images/pas-errand.png)
+
+#### Resource Config
+
+- [GCP Load balancing](https://console.cloud.google.com/net-services/loadbalancing/loadBalancers/list)
+
 
 - Router
   - `tcp:pcf-cf-ws,http:pcf-httpslb`
@@ -358,63 +471,9 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 ![](images/pas-applying.png)
 
 
-### temp
-```
-$ pivnet product-files -p stemcells-ubuntu-xenial -r 97.28
+#### PAS 2.2 のダウンロードとステージング
 
-+--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-|   ID   |              NAME              | FILE VERSION |      FILE TYPE      |                              SHA256                              |                                                 AWS OBJECT KEY                                                 |
-+--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| 247325 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | d8ea90830e1bcbe06c5b6222198e6a70ee790206612d40b9141d4c8c70c2a5f8 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-vsphere-esxi-ubuntu-xenial-go_agent.tgz              |
-|        | vSphere 97.28                  |              |                     |                                                                  |                                                                                                                |
-| 247323 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | a9593e32795524fc2067cd2116f169460f949cee3a71c1ccb2acc85af08c35d0 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-vcloud-esxi-ubuntu-xenial-go_agent.tgz               |
-|        | vCloud 97.28                   |              |                     |                                                                  |                                                                                                                |
-| 202813 | Ubuntu Xenial Stemcell 97.10   |        97.10 | Open Source License | f80d689702f0e7eb360dbe94c4bb7b0bcf1c6e80e15aa7b2fee0d2ce365cda6a | product-files/stemcells-ubuntu-xenial/open_source_license_stemcells-ubuntu-xenial-97.10-e68fd75-1535122432.txt |
-|        | OSL                            |              |                     |                                                                  |                                                                                                                |
-| 247316 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | 1dcddd9e8f00a96c09e3c248d82ed6d015606100c3445f241965edb0115d9a57 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-openstack-kvm-ubuntu-xenial-go_agent-raw.tgz         |
-|        | Openstack 97.28                |              |                     |                                                                  |                                                                                                                |
-| 247315 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | c1202c333902e27a5cdaea360ea9ca9006bafb8a5e40d2d305a164fcb31d2e58 | product-files/stemcells-ubuntu-xenial/light-bosh-stemcell-97.28-google-kvm-ubuntu-xenial-go_agent.tgz          |
-|        | Google Cloud Platform 97.28    |              |                     |                                                                  |                                                                                                                |
-| 247301 | Ubuntu Xenial Stemcell for     |        97.28 | Software            | 443b1b71f4f070c68b27737d9d6380f26751866cd263823e4a2a300f39319504 | product-files/stemcells-ubuntu-xenial/bosh-stemcell-97.28-azure-hyperv-ubuntu-xenial-go_agent.tgz              |
-|        | Azure 97.28                    |              |                     |                                                                  |                                                                                                                |
-| 247298 | Ubuntu Xenial Stemcell for AWS |        97.28 | Software            | 7d3332a5a84eb59df59b3d94eeeced4d4819dd0ebfd8b3bc37f75c4d51e6905e | product-files/stemcells-ubuntu-xenial/light-bosh-stemcell-97.28-aws-xen-hvm-ubuntu-xenial-go_agent.tgz         |
-|        |                          97.28 |              |                     |                                                                  |                                                                                                                |
-+--------+--------------------------------+--------------+---------------------+------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-```
-
-```
-$ gcloud compute ssh ubuntu@pcf-ops-manager \
-    --zone $ZONE \
-    --force-key-file-overwrite \
-    --strict-host-key-checking=no \
-    --quiet \
-    --command "pivnet login --api-token=$REFRESH_TOKEN && pivnet accept-eula -p stemcells-ubuntu-xenial -r 97.34 && pivnet download-product-files -p stemcells-ubuntu-xenial -r 97.28 -i 247315"
-```
-
-```
-$ gcloud compute ssh ubuntu@pcf-ops-manager \
-    --zone $ZONE \
-    --force-key-file-overwrite \
-    --strict-host-key-checking=no \
-    --quiet \
-    --command "ls -l"
-
-total 13553508
--rw-rw-r-- 1 ubuntu ubuntu 13878740011 Nov 30 13:02 cf-2.3.3-build.10.pivotal
--rw-rw-r-- 1 ubuntu ubuntu       20312 Dec  1 08:45 light-bosh-stemcell-97.28-google-kvm-ubuntu-xenial-go_agent.tgz
--rw-rw-r-- 1 ubuntu ubuntu       20349 Dec  1 00:48 light-bosh-stemcell-97.34-google-kvm-ubuntu-xenial-go_agent.tgz
-```
-
-```
-$ gcloud compute ssh ubuntu@pcf-ops-manager \
-    --zone $ZONE \
-    --force-key-file-overwrite \
-    --strict-host-key-checking=no \
-    --quiet \
-    --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-stemcell -s ~/light-bosh-stemcell-97.28-google-kvm-ubuntu-xenial-go_agent.tgz"
-```
-
-
+<details><summary>PAS 2.2 のダウンロードとステージング</summary>
 
 ```
 $ gcloud compute ssh ubuntu@pcf-ops-manager \
@@ -460,4 +519,6 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
     --quiet \
     --command "om --target https://localhost -k -u admin -p admin --request-timeout 3600 upload-stemcell -s ~/light-bosh-stemcell-3586.57-google-kvm-ubuntu-trusty-go_agent.tgz"
 ```
+</details>
+
 ## まとめ / 振り返り

@@ -323,4 +323,6 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 ![](images/pas-storage.png)
 
+![](images/pas-syslog.png)
+
 ## まとめ / 振り返り

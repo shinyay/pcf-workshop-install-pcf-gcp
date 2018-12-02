@@ -472,7 +472,7 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 #### PAS ログイン
 
-- https://login.<YOUR-SYSTEM-DOMAIN>
+- `https://login.<YOUR-SYSTEM-DOMAIN>`
 
 ![](images/pas-login.png)
 ![](images/pas-appsman-login.png)

@@ -372,11 +372,18 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 #### Networking
 
-![](images/pas-cert-gen.png)
-
 ![](images/pas-nw1.png)
+
+- Certificates and Private Key for HAProxy and Router
+  - `*.pcf.syanagihara.cf,*.sys.pcf.syanagihara.cf,*.apps.pcf.syanagihara.cf,login.sys.pcf.syanagihara.cf,uaa.sys.pcf.syanagihara.cf,doppler.sys.pcf.syanagihara.cf,loggregator.sys.pcf.syanagihara.cf,ssh.sys.pcf.syanagihara.cf,tcp.pcf.syanagihara.cf,opsman.pcf.syanagihara.cf`
+
+![](images/pas-cert-gen.png)
 ![](images/pas-nw2.png)
 ![](images/pas-nw3.png)
+
+- Disable SSL certificate verification for this environment
+  - true
+
 ![](images/pas-nw4.png)
 ![](images/pas-nw5.png)
 ![](images/pas-nw6.png)

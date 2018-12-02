@@ -240,7 +240,7 @@ $ bosh2 -e gcp -d cf-e5e5d0d42a09e353221f start
 ```
 </details>
 
-## Duplicate ‘bosh-dns-aliases’ error while installing PAS on GCP
+## Duplicate ‘bosh-dns-aliases’ error while installing PAS on GCP
 
 ```
 $ bosh configs

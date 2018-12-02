@@ -562,7 +562,7 @@ Succeeded
 </details>
 
 #### BOSH Director へログイン
-BOSH Director のログインパスワードは Ops Manager の Credentials 画面から確認　
+BOSH Director のログインパスワードは Ops Manager の Credentials 画面から確認　
 ![](images/bosh-pwd.png)
 
 
@@ -713,7 +713,7 @@ Succeeded
 ```
 </details>
 
-#### PAS 仮想マシンの全停止
+#### PAS 仮想マシンの全停止
 
 - `bosh2 -e MY-ENV -d MY-DEPLOYMENT stop --hard`
 

@@ -247,7 +247,7 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 #### StemCell の設定
 
-##### StemCell プロダクト名確認
+##### StemCell プロダクト名確認
 
 ```
 $ pivnet products|grep stemcells

@@ -356,6 +356,9 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 #### AZ and Network Assignments
 
+- Network
+  - `pas`
+
 ![](images/pas-az-nw.png)
 
 #### Domains

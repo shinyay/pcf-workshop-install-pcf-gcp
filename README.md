@@ -363,11 +363,16 @@ $ gcloud compute ssh ubuntu@pcf-ops-manager \
 
 #### Domains
 
+- System Domain
+  - `sys.<YOUR-DOMAIN>`
+- Apps Domain
+  - `apps.<YOUR-DOMAIN>`
+
 ![](images/pas-domain.png)
 
-![](images/pas-cert-gen.png)
-
 #### Networking
+
+![](images/pas-cert-gen.png)
 
 ![](images/pas-nw1.png)
 ![](images/pas-nw2.png)
